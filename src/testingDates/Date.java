@@ -36,29 +36,33 @@ public class Date implements Cloneable {
         this.year  = aDate.year;
     }
 
-    // Clone support for tests
+    // Clone support for snapshots in tests
     @Override
     public Date clone() {
         return new Date(this);
     }
 
-    // Setters that ignore illegal inputs
+    // --- Step 9: string‑month setDate returns this or null --- //
+    public Date setDate(String monthString, int day, int year) {
+        if (!dateOK(monthString, day, year)) {
+            return null;               // illegal input → do nothing, return null
+        }
+        // legal input → apply and return this
+        this.month = monthString;
+        this.day   = day;
+        this.year  = year;
+        return this;
+    }
+    // -------------------------------------------------------- //
+
+    // numeric‑month overload remains void
     public void setDate(int monthInt, int day, int year) {
         if (dateOK(monthInt, day, year)) {
             this.month = monthString(monthInt);
             this.day   = day;
             this.year  = year;
         }
-        // else ignore
-    }
-
-    public void setDate(String monthString, int day, int year) {
-        if (dateOK(monthString, day, year)) {
-            this.month = monthString;
-            this.day   = day;
-            this.year  = year;
-        }
-        // else ignore
+        // illegal input → ignore
     }
 
     public void setDate(int year) {
@@ -121,8 +125,8 @@ public class Date implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)                   return true;
-        if (!(obj instanceof Date))        return false;
+        if (this == obj)            return true;
+        if (!(obj instanceof Date)) return false;
         Date other = (Date) obj;
         return this.year == other.year
             && this.day  == other.day
@@ -137,7 +141,6 @@ public class Date implements Cloneable {
             && day < otherDate.day;
     }
 
-    // Interactive input
     public void readInput() {
         Scanner keyboard = new Scanner(System.in);
         while (true) {
@@ -161,30 +164,30 @@ public class Date implements Cloneable {
             && yearInt  >= 1000 && yearInt <= 9999;
     }
 
-    private boolean dateOK(String monthString, int dayInt, int yearInt) {
-        if (!monthOK(monthString) || yearInt < 1000 || yearInt > 9999) {
+    private boolean dateOK(String m, int dayInt, int yearInt) {
+        if (!monthOK(m) || yearInt < 1000 || yearInt > 9999) {
             return false;
         }
-        int m;
-        switch (monthString) {
-            case "January":   m = 1;  break;
-            case "February":  m = 2;  break;
-            case "March":     m = 3;  break;
-            case "April":     m = 4;  break;
-            case "May":       m = 5;  break;
-            case "June":      m = 6;  break;
-            case "July":      m = 7;  break;
-            case "August":    m = 8;  break;
-            case "September": m = 9;  break;
-            case "October":   m = 10; break;
-            case "November":  m = 11; break;
-            case "December":  m = 12; break;
+        int monthNum;
+        switch (m) {
+            case "January":   monthNum = 1;  break;
+            case "February":  monthNum = 2;  break;
+            case "March":     monthNum = 3;  break;
+            case "April":     monthNum = 4;  break;
+            case "May":       monthNum = 5;  break;
+            case "June":      monthNum = 6;  break;
+            case "July":      monthNum = 7;  break;
+            case "August":    monthNum = 8;  break;
+            case "September": monthNum = 9;  break;
+            case "October":   monthNum = 10; break;
+            case "November":  monthNum = 11; break;
+            case "December":  monthNum = 12; break;
             default:          return false;
         }
         int maxDay;
-        if (m == 2) {
+        if (monthNum == 2) {
             maxDay = 28;
-        } else if (m == 4 || m == 6 || m == 9 || m == 11) {
+        } else if (monthNum == 4 || monthNum == 6 || monthNum == 9 || monthNum == 11) {
             maxDay = 30;
         } else {
             maxDay = 31;
@@ -197,8 +200,10 @@ public class Date implements Cloneable {
             || m.equals("March")    || m.equals("April")
             || m.equals("May")      || m.equals("June")
             || m.equals("July")     || m.equals("August")
-            || m.equals("September")|| m.equals("October")
-            || m.equals("November") || m.equals("December");
+            || m.equals("September")
+            || m.equals("October")
+            || m.equals("November")
+            || m.equals("December");
     }
 
     private String monthString(int monthNumber) {
@@ -219,18 +224,18 @@ public class Date implements Cloneable {
         }
     }
 
-    // Adds one day, rolling month/year as needed
+    /** Stub for lab step 5 */
     public Date addOneDay() {
-        int m = getMonth();
-        int d = day + 1;
+        int m = getMonth();        // numeric month 1–12
+        int d = day + 1;           // next day
         int y = year;
         int maxDay;
         if (m == 2) {
-            maxDay = 28;
+            maxDay = 28;          // February fixed to 28
         } else if (m == 4 || m == 6 || m == 9 || m == 11) {
-            maxDay = 30;
+            maxDay = 30;          // Apr, Jun, Sep, Nov
         } else {
-            maxDay = 31;
+            maxDay = 31;          // the rest
         }
         if (d > maxDay) {
             d = 1;
@@ -246,7 +251,6 @@ public class Date implements Cloneable {
         return this;
     }
 
-    // For manual testing
     public static void main(String[] args) {
         System.out.println("Main in Date.");
         Date tester = new Date();
