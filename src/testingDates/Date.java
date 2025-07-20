@@ -1,4 +1,4 @@
-package buildToTestLab;
+package testingDates;
 
 import java.util.Scanner;
 
@@ -252,9 +252,18 @@ public class Date
             return "Error"; //to keep the compiler happy
         }
     }
+
     public static void main(String[] args) {
         System.out.println("Main in Date.");
         Date tester = new Date();
         System.out.println("tester is "+tester);
     }
+
+    /** Stub for lab step 5 */
+    public Date addOneDay() {
+        System.out.println("Date.addOneDay() is not yet implemented.");
+        return this;
+    }
 }
+
+
